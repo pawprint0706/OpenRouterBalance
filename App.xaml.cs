@@ -55,8 +55,12 @@ public partial class App : System.Windows.Application
             Text = "OpenRouter Balance",
             ContextMenuStrip = menu
         };
-        // 트레이 아이콘 더블클릭 시 메인 윈도우 표시
-        _trayIcon.DoubleClick += (_, _) => ShowMainWindow();
+        // 트레이 아이콘 좌클릭 한 번으로 메인 윈도우 표시 (우클릭은 컨텍스트 메뉴)
+        _trayIcon.MouseClick += (_, e) =>
+        {
+            if (e.Button == WinForms.MouseButtons.Left)
+                ShowMainWindow();
+        };
     }
 
     private static Icon LoadTrayIcon()

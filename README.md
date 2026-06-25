@@ -19,7 +19,7 @@ OpenRouter의 크레딧 조회/충전 페이지를 즉시 확인할 수 있는 �
 
 | 항목 | 동작 |
 |------|------|
-| 열기 | 메인 창 표시 (트레이 아이콘 더블클릭과 동일) |
+| 열기 | 메인 창 표시 (트레이 아이콘 좌클릭과 동일) |
 | 시작프로그램 등록 ☑ | Windows 시작 시 자동 실행 등록/해제 |
 | 종료 | 앱 완전 종료 |
 
@@ -69,3 +69,7 @@ OpenRouterBalance/
 - WebView2는 네이티브 HWND라 일반 WPF 오버레이가 가려지므로, 플로팅 버튼은 `Popup` + `CustomPopupPlacementCallback`으로 항상 위에 표시합니다.
 - 시작프로그램 등록은 `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`의 `OpenRouterBalance` 값을 사용합니다.
 - 창이 닫혀도 앱이 유지되도록 `ShutdownMode=OnExplicitShutdown`을 사용하며, 트레이 "종료"에서만 실제 종료합니다.
+
+## 라이선스 / 상표
+
+OpenRouter 로고 및 상표는 OpenRouter, Inc.의 자산입니다. 본 앱은 비공식 클라이언트로, 개인 편의를 위한 용도입니다.
