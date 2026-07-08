@@ -1,7 +1,6 @@
 # OpenRouter Balance (Windows)
 
 OpenRouter의 크레딧 조회/충전 페이지를 즉시 확인할 수 있는 윈도우 웹뷰 앱입니다.
-([안드로이드 버전](https://github.com/pawprint0706/open-router-balance) 동작을 동일하게 옮긴 데스크톱 버전)
 
 대상 페이지: `https://openrouter.ai/settings/credits`
 
