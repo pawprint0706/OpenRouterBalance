@@ -10,6 +10,7 @@ OpenRouter의 크레딧 조회/충전 페이지를 즉시 확인할 수 있는 �
 - **모바일 페이지 렌더링** — 모바일 User-Agent로 접속하여 모바일 레이아웃 표시
 - **고정 창 크기** — 480 × 800 (세로형 모바일 비율), 리사이즈 불가
 - **트레이 상주** — 시작 시 트레이 아이콘 생성, 메인 창을 닫으면 종료되지 않고 트레이로 숨김
+- **다크/라이트 테마 대응 아이콘** — 작업표시줄 테마에 맞춰 트레이·창 아이콘이 흑/백으로 자동 전환 (테마 변경 시 즉시 반영)
 - **종료 제한** — 트레이 아이콘 우클릭 → "종료" 메뉴로만 종료
 - **새로고침 플로팅 버튼** — 화면 우측 하단 FAB, 클릭 시 대상 페이지 재접속
 - **시작프로그램 등록** — 트레이 우클릭 메뉴의 체크 항목. 시작 시 레지스트리를 검사해 상태 반영, 체크/해제 시 등록/해제
@@ -57,10 +58,10 @@ dotnet publish -c Release -r win-x64 --self-contained true `
 
 ```
 OpenRouterBalance/
-├─ App.xaml(.cs)          트레이 아이콘 · 컨텍스트 메뉴 · 시작프로그램 레지스트리
+├─ App.xaml(.cs)          트레이 아이콘 · 컨텍스트 메뉴 · 시작프로그램 레지스트리 · 테마별 아이콘 전환
 ├─ MainWindow.xaml(.cs)   WebView2 · 새로고침 플로팅 버튼
 ├─ app.manifest           Per-Monitor DPI 인식
-├─ app.ico                앱/창/트레이 아이콘
+├─ icons/                 작업표시줄 테마 대응 흑/백 아이콘 (TrayIcon-black.ico / TrayIcon-white.ico 및 PNG 세트)
 └─ OpenRouterBalance.csproj
 ```
 
@@ -69,6 +70,7 @@ OpenRouterBalance/
 - WebView2는 네이티브 HWND라 일반 WPF 오버레이가 가려지므로, 플로팅 버튼은 `Popup` + `CustomPopupPlacementCallback`으로 항상 위에 표시합니다.
 - 시작프로그램 등록은 `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`의 `OpenRouterBalance` 값을 사용합니다.
 - 창이 닫혀도 앱이 유지되도록 `ShutdownMode=OnExplicitShutdown`을 사용하며, 트레이 "종료"에서만 실제 종료합니다.
+- 트레이·창 아이콘은 레지스트리 `...\Themes\Personalize`의 `SystemUsesLightTheme` 값으로 작업표시줄 테마를 판별합니다. 라이트(밝은 작업표시줄)에는 검정, 다크(어두운 작업표시줄)에는 흰색 아이콘을 사용하며, `SystemEvents.UserPreferenceChanged`로 테마 전환을 실시간 감지합니다.
 
 ## 라이선스 / 상표
 

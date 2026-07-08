@@ -10,7 +10,7 @@
     <AssemblyName>OpenRouterBalance</AssemblyName>
     <RootNamespace>OpenRouterBalance</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationIcon>icons\TrayIcon-black.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="app.ico" />
+    <!-- 작업표시줄(트레이) 다크/라이트 테마 대응용 흑/백 아이콘 -->
+    <Resource Include="icons\TrayIcon-black.ico" />
+    <Resource Include="icons\TrayIcon-white.ico" />
   </ItemGroup>
 
 </Project>

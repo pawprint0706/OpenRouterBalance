@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using WinForms = System.Windows.Forms;
 
@@ -21,9 +22,55 @@ public partial class App : System.Windows.Application
     private void App_Startup(object sender, StartupEventArgs e)
     {
         _mainWindow = new MainWindow();
+        ApplyMainWindowIcon();
         _mainWindow.Show();
 
         InitTrayIcon();
+
+        // 윈도우 다크/라이트(작업표시줄 색상) 전환 시 아이콘 갱신
+        SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+    }
+
+    private void OnUserPreferenceChanged(object? sender, UserPreferenceChangedEventArgs e)
+    {
+        // 테마 변경은 General 범주로 통지됨
+        if (e.Category != UserPreferenceCategory.General) return;
+
+        var old = _trayIcon.Icon;
+        _trayIcon.Icon = LoadTrayIcon();
+        old?.Dispose();
+
+        ApplyMainWindowIcon();
+    }
+
+    // 작업표시줄(트레이)이 라이트 테마인지 여부.
+    //  - 라이트(밝은 작업표시줄) → 검정 아이콘
+    //  - 다크(어두운 작업표시줄) → 흰색 아이콘
+    private static bool IsTaskbarLightTheme()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(
+            @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", false);
+        // SystemUsesLightTheme: 1 = 라이트, 0 = 다크. 값이 없으면 다크로 가정.
+        return key?.GetValue("SystemUsesLightTheme") is int v && v != 0;
+    }
+
+    // 현재 테마에 맞는 아이콘 리소스 경로
+    private static string CurrentIconName =>
+        IsTaskbarLightTheme() ? "TrayIcon-black.ico" : "TrayIcon-white.ico";
+
+    // 메인 윈도우(작업표시줄 버튼/타이틀바) 아이콘도 테마에 맞춰 적용
+    private void ApplyMainWindowIcon()
+    {
+        try
+        {
+            _mainWindow.Icon = BitmapFrame.Create(
+                new Uri($"pack://application:,,,/icons/{CurrentIconName}"),
+                BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+        }
+        catch
+        {
+            // 실패 시 기본(ApplicationIcon) 유지
+        }
     }
 
     private void InitTrayIcon()
@@ -65,10 +112,10 @@ public partial class App : System.Windows.Application
 
     private static Icon LoadTrayIcon()
     {
-        // 패키징된 .ico 가 있으면 사용, 없으면 기본 애플리케이션 아이콘 사용
+        // 작업표시줄 테마에 맞는 흑/백 .ico 를 사용, 없으면 기본 애플리케이션 아이콘 사용
         try
         {
-            var uri = new Uri("pack://application:,,,/app.ico");
+            var uri = new Uri($"pack://application:,,,/icons/{CurrentIconName}");
             var info = GetResourceStream(uri);
             if (info != null)
             {
@@ -94,6 +141,7 @@ public partial class App : System.Windows.Application
     private void ExitApplication()
     {
         ReallyExit = true;
+        SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         _trayIcon.Visible = false;
         _trayIcon.Dispose();
         Shutdown();
